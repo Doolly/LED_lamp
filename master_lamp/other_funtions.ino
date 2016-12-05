@@ -5,7 +5,7 @@ void InitMoter(void) {
 
 void MoterCtrl(int distance) {
   int pot_val = analogRead(POT);
-  int SPEED = map(pot_val, 0, 1023, 125, 255 );
+  int SPEED = map(pot_val, 0, 1023, 16, 255 );
   Serial.print("pot_val = " + String(pot_val) + "\n");
   analogWrite(MOTER_F, SPEED);
   analogWrite(MOTER_B, 0);

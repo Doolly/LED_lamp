@@ -50,6 +50,7 @@ void setup() {
 
 void loop() {
   LedState(1);
+  InitMoter();
   Serial.println("waiting for color");
   
   if (countR + countG + countB > 320) { //종이가 올라왔다는 조건
@@ -64,10 +65,10 @@ void loop() {
     Serial.println("color publish through BT");
 
     while (wind == 0) { //바람을 감지
-      Serial.println("wind detected~~~~~~~~~~~~~");
+      Serial.println("~~~~~~~~~wind detected~~~~~~~~~");
       delay(500);
       LedState(0);
-      MoterCtrl(10000);
+      MoterCtrl(7000);
       wind = 1;
     }
   }
