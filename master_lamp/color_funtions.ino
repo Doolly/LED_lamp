@@ -24,25 +24,24 @@ ISR(TIMER2_OVF_vect) { //the timer 2, 10ms interrupt overflow again. Internal ov
   flag++;
   if (flag == 1) {
     countR = counter;
+   // Serial.print(countR, DEC); Serial.print(", ");
     digitalWrite(s2, HIGH);
     digitalWrite(s3, HIGH);
   }
   else if (flag == 2) {
     countG = counter;
+   // Serial.print(countG, DEC); Serial.print(", ");
     digitalWrite(s2, LOW);
     digitalWrite(s3, HIGH);
   }
   else if (flag == 3) {
     countB = counter;
+   // Serial.println(countB, DEC);  
     digitalWrite(s2, LOW);
     digitalWrite(s3, LOW);
   }
   else if (flag == 4) {
     flag = 0;
   }
-  counter = 0;
-  
-  Serial.print(countR, DEC); Serial.print(", ");
-  Serial.print(countG, DEC); Serial.print(", ");
-  Serial.println(countB, DEC);  
+  counter = 0; 
 }

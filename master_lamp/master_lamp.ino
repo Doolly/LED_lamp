@@ -3,10 +3,10 @@
 #define BT_RX 12
 #define BT_TX 13
 #define POT A0
-#define PHOTO_INTER 8
+#define PHOTO_INTER 3
 #define MOTER_F 9
 #define MOTER_B 10
-#define s0 3
+#define s0 8
 #define s1 4
 #define s2 5
 #define s3 6
@@ -24,6 +24,10 @@ int pot_val;
 int moter_dir;
 int mode;
 int state_indi;
+volatile int wind = 1;
+unsigned long current_time;
+unsigned long previous_time;
+const long detecting_time = 3000;
 
 void setup() {
   Serial.begin(9600);
@@ -38,6 +42,7 @@ void setup() {
   pinMode(COLOR_LED, OUTPUT);
   digitalWrite(COLOR_LED, LOW);
   TCS(); //timer2 for color sensor
+  attachInterrupt(1, WindDetect, FALLING);
   InitMoter();
 }
 
@@ -45,19 +50,26 @@ void setup() {
 
 void loop() {
   LedState(1);
-  if () { //종이가 올라왔다는 조건
+  Serial.println("waiting for color");
+  
+  if (countR + countG + countB > 320) { //종이가 올라왔다는 조건
     LedState(4);
-  }
-  if () { //색을 감지했다는 조건
+    Serial.println("color detected");
+    current_time = millis();
+    previous_time = current_time;
+    while (current_time - previous_time < detecting_time) {
+      current_time = millis();
+    }
     ColorPub();
-  }
+    Serial.println("color publish through BT");
 
-  int wind = digitalRead(PHOTO_INTER);
-  while (wind == 1) { //바람을 감지
-    delay(500);
-    LedState(0);
-    MoterCtrl(2000);
-    wind = 0;
+    while (wind == 0) { //바람을 감지
+      Serial.println("wind detected~~~~~~~~~~~~~");
+      delay(500);
+      LedState(0);
+      MoterCtrl(10000);
+      wind = 1;
+    }
   }
 
 }
