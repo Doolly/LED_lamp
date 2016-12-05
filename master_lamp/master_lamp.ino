@@ -29,6 +29,13 @@ unsigned long current_time;
 unsigned long previous_time;
 const long detecting_time = 3000;
 
+void TCS();
+void WindDetect();
+void InitMoter(void);
+void LedState(int mode);
+void ColorPub();
+void MoterCtrl();
+
 void setup() {
   Serial.begin(9600);
   BTSerial.begin(bt_baud);
@@ -68,7 +75,7 @@ void loop() {
       Serial.println("~~~~~~~~~wind detected~~~~~~~~~");
       delay(500);
       LedState(0);
-      MoterCtrl(7000);
+      MoterCtrl();
       wind = 1;
     }
   }

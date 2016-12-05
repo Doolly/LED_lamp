@@ -1,3 +1,6 @@
+void ISR_INTO();
+void timer2_init(void);
+
 void TCS() {
   flag = 0;
   digitalWrite(s1, HIGH);

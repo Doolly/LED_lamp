@@ -3,22 +3,28 @@ void InitMoter(void) {
   digitalWrite(MOTER_F, LOW);
 }
 
-void MoterCtrl(int distance) {
+void MoterCtrl() {
   int pot_val = analogRead(POT);
   int SPEED = map(pot_val, 0, 1023, 16, 255 );
+  int delay_time = 280000 / SPEED;
+  if(delay_time >20000){
+    delay_time = 20000;
+  }
   Serial.print("pot_val = " + String(pot_val) + "\n");
+  Serial.print("speed = " + String(SPEED) + "\n");
   analogWrite(MOTER_F, SPEED);
   analogWrite(MOTER_B, 0);
-  delay(distance);
+  delay(delay_time*6);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, 0);
-  delay(30000);
+  delay(5000);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, SPEED);
-  delay(distance);
+  delay(delay_time*5.2);
 }
 
 void ColorPub() {
+  
   BTSerial.print(countR);
   BTSerial.print("r,");
   delay(150);
