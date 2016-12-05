@@ -7,32 +7,38 @@ void MoterCtrl() {
   int pot_val = analogRead(POT);
   int SPEED = map(pot_val, 0, 1023, 16, 255 );
   int delay_time = 280000 / SPEED;
-  if(delay_time >20000){
+  if (delay_time > 20000) {
     delay_time = 20000;
   }
   Serial.print("pot_val = " + String(pot_val) + "\n");
   Serial.print("speed = " + String(SPEED) + "\n");
   analogWrite(MOTER_F, SPEED);
   analogWrite(MOTER_B, 0);
-  delay(delay_time*6);
+  delay(delay_time * 6);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, 0);
-  delay(5000);
+  delay(20000);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, SPEED);
-  delay(delay_time*5.2);
+  delay(delay_time * 5.2);
+  lamp_action = 0;
+  BTSerial.print(lamp_action);
+  BTSerial.print("f,");
+  delay(150);
 }
 
-void ColorPub() {
-  
-  BTSerial.print(countR);
+void ColorPub(int R, int G, int B, int action) {
+  BTSerial.print(R);
   BTSerial.print("r,");
   delay(150);
-  BTSerial.print(countG);
+  BTSerial.print(G);
   BTSerial.print("g,");
   delay(150);
-  BTSerial.print(countB);
+  BTSerial.print(B);
   BTSerial.print("b,");
+  delay(150);
+  BTSerial.print(action);
+  BTSerial.print("f,");
   delay(150);
 }
 
@@ -52,9 +58,15 @@ void LedState(int mode) {
   }
 }
 
-void WindDetect (){
+void WindDetect () {
   wind = 0;
-  
-  }
+}
 
+
+void SerialPrint() {
+  Serial.print(countR, DEC); Serial.print(", ");
+  Serial.print(countG, DEC); Serial.print(", ");
+  Serial.print(countB, DEC); Serial.print(", ");
+  Serial.println(lamp_action);
+}
 

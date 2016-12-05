@@ -24,6 +24,7 @@ int pot_val;
 int moter_dir;
 int mode;
 int state_indi;
+int lamp_action;
 volatile int wind = 1;
 unsigned long current_time;
 unsigned long previous_time;
@@ -33,8 +34,9 @@ void TCS();
 void WindDetect();
 void InitMoter(void);
 void LedState(int mode);
-void ColorPub();
+void ColorPub(int R, int G, int B, int action);
 void MoterCtrl();
+void SerialPrint();
 
 void setup() {
   Serial.begin(9600);
@@ -58,8 +60,12 @@ void setup() {
 void loop() {
   LedState(1);
   InitMoter();
-  Serial.println("waiting for color");
-  
+  lamp_action = 0;
+  BTSerial.print(lamp_action);
+  BTSerial.print("f,");
+
+  Serial.print("waiting for color     ");
+  SerialPrint();
   if (countR + countG + countB > 320) { //종이가 올라왔다는 조건
     LedState(4);
     Serial.println("color detected");
@@ -68,8 +74,11 @@ void loop() {
     while (current_time - previous_time < detecting_time) {
       current_time = millis();
     }
-    ColorPub();
+    lamp_action = 1;
+    BTSerial.print(S);
+    ColorPub(countR, countG, countB, lamp_action);
     Serial.println("color publish through BT");
+    SerialPrint();
 
     while (wind == 0) { //바람을 감지
       Serial.println("~~~~~~~~~wind detected~~~~~~~~~");
