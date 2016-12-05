@@ -10,12 +10,10 @@ SoftwareSerial BTSerial(BT_RX, BT_TX);
 
 void colorWipe(uint32_t c, uint8_t wait);
 
-char c;
-int bt_baud = 9600;
+int bt_baud = 38400;
 int red;
 int green;
 int blue;
-
 String readString;
 
 void setup() {
@@ -28,7 +26,7 @@ void setup() {
 void loop() {
 
   if (BTSerial.available()) {
-    c = BTSerial.read();
+   char c = BTSerial.read();
     if (c == ',') {       //delimited ',' string parse
       if (readString.length() > 1) { //reads characters into a string
         int n = readString.toInt();  //convert readString into a number
@@ -52,9 +50,10 @@ void loop() {
   Serial.print("red = " + String(red) + "\n");
   Serial.print("green = " + String(green) + "\n");
   Serial.print("blue = " + String(blue) + "\n");
-  
- // colorWipe(strip.Color(red, green, blue), 50);
 
+  rgbFadeInAndOut(red, green, blue, 5);
+  //colorWipe(strip.Color(red, green, blue), 50);
+  //theaterChase(strip.Color(127, 0, 0), 50);
 }
 
 void colorWipe(uint32_t c, uint8_t wait) {
@@ -62,5 +61,22 @@ void colorWipe(uint32_t c, uint8_t wait) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
+  }
+}
+
+void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
+  for(uint8_t b = 0; b <255; b++) {
+     for(uint8_t i=0; i < strip.numPixels(); i++) {
+        strip.setPixelColor(i, red * b/255, green * b/255, blue * b/255);
+     }
+     strip.show();
+     delay(wait);
+  }
+  for(uint8_t b=255; b > 0; b--) {
+     for(uint8_t i = 0; i < strip.numPixels(); i++) {
+        strip.setPixelColor(i, red * b/255, green * b/255, blue * b/255);
+     }
+     strip.show();
+     delay(wait);
   }
 }
