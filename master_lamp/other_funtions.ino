@@ -47,10 +47,10 @@ void LedState(int mode) {
   //on:off 0:1  1:4, 1:1, 4:1, 1:0
 
   if (state_indi < (110 - mode * 30)) {
-    digitalWrite(COLOR_LED, LOW);
+    analogWrite(COLOR_LED, 0);
   }
   else {
-    digitalWrite(COLOR_LED, HIGH);
+    analogWrite(COLOR_LED, 200);
   }
   state_indi += 1;
   if (state_indi > 100) {

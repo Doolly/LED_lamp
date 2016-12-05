@@ -5,7 +5,7 @@
 #define BT_RX 2
 #define BT_TX 3
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(40, LED, NEO_GRB + NEO_KHZ800); //(led개수,제어핀번호,타입flag)
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(59, LED, NEO_GRB + NEO_KHZ800); //(led개수,제어핀번호,타입flag)
 SoftwareSerial BTSerial(BT_RX, BT_TX);
 
 void colorWipe(uint32_t c, uint8_t wait);
@@ -21,35 +21,39 @@ String readString;
 void setup() {
   Serial.begin(9600);
   BTSerial.begin(bt_baud);
-  strip.begin();
+  pinMode(LED, OUTPUT);
+  strip.begin(); //모든 LED off
   strip.show();
 }
 
 void loop() {
   lamp_action = 0;
-  digitalWrite(LED, LOW);
+  for (uint8_t i = 0; i < strip.numPixels(); i++) {
+    strip.setPixelColor(i, 0, 0, 0);
+  }
+  strip.show();
   GetBluetooth();
+
   Serial.print(red); Serial.print(", ");
   Serial.print(green); Serial.print(", ");
   Serial.print(blue); Serial.print(", ");
   Serial.println(lamp_action);
 
   while (lamp_action == 1) {
-    rgbFadeInAndOut(red, green, blue, 5);
-    GetBluetooth();
+    rgbFadeInAndOut(red, green, blue, 10);
   }
 }
 
 void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
-  for (uint8_t b = 0; b < 255; b++) {
+  for (uint8_t b = 40; b < 255; b++) {
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, red * b / 255, green * b / 255, blue * b / 255);
     }
     strip.show();
     delay(wait);
+    GetBluetooth();
   }
-  GetBluetooth();
-  for (uint8_t b = 255; b > 0; b--) {
+  for (uint8_t b = 255; b > 40; b--) {
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, red * b / 255, green * b / 255, blue * b / 255);
     }

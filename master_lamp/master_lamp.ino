@@ -8,16 +8,16 @@
 #define MOTER_B 10
 #define s0 8
 #define s1 4
-#define s2 5
+#define s2 11
 #define s3 6
 #define out 2
-#define COLOR_LED 11
+#define COLOR_LED 5
 
 SoftwareSerial BTSerial(BT_RX, BT_TX);
 ////////////////////color sensor////////////////////
 int flag = 0;
-byte counter = 0;
-byte countR = 0, countG = 0, countB = 0;
+int counter = 0;
+int countR = 0, countG = 0, countB = 0;
 
 int bt_baud = 9600;
 int pot_val;
@@ -60,24 +60,27 @@ void setup() {
 void loop() {
   LedState(1);
   InitMoter();
+  
   lamp_action = 0;
   BTSerial.print(lamp_action);
   BTSerial.print("f,");
 
   Serial.print("waiting for color     ");
   SerialPrint();
-  if (countR + countG + countB > 320) { //종이가 올라왔다는 조건
+  
+  if (countR + countG + countB > 120) { //종이가 올라왔다는 조건
     LedState(4);
-    Serial.println("color detected");
+    Serial.println("color detected ");
+    
     current_time = millis();
     previous_time = current_time;
     while (current_time - previous_time < detecting_time) {
       current_time = millis();
     }
     lamp_action = 1;
-    BTSerial.print(S);
     ColorPub(countR, countG, countB, lamp_action);
-    Serial.println("color publish through BT");
+    Serial.println("color publish through BT  ");
+    Serial.println("  ");
     SerialPrint();
 
     while (wind == 0) { //바람을 감지
