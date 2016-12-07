@@ -17,13 +17,14 @@ void MoterCtrl() {
   delay(delay_time * 6);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, 0);
-  delay(20000);
-  analogWrite(MOTER_F, 0);
-  analogWrite(MOTER_B, SPEED);
-  delay(delay_time * 5.2);
+  delay(10000);
   lamp_action = 0;
   BTSerial.print(lamp_action);
   BTSerial.print("f,");
+  delay(10000);
+  analogWrite(MOTER_F, 0);
+  analogWrite(MOTER_B, SPEED);
+  delay(delay_time * 5.2);
   delay(150);
 }
 
