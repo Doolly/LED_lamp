@@ -17,30 +17,17 @@ void MoterCtrl() {
   delay(delay_time * 6);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, 0);
-  delay(10000);
-  lamp_action = 0;
-  BTSerial.print(lamp_action);
-  BTSerial.print("f,");
-  delay(10000);
+  delay(19500);
+  ColorPub('x', 0, 0, 0);
+  delay(500);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, SPEED);
   delay(delay_time * 5.2);
   delay(150);
 }
 
-void ColorPub(int R, int G, int B, int action) {
-  BTSerial.print(R);
-  BTSerial.print("r,");
-  delay(150);
-  BTSerial.print(G);
-  BTSerial.print("g,");
-  delay(150);
-  BTSerial.print(B);
-  BTSerial.print("b,");
-  delay(150);
-  BTSerial.print(action);
-  BTSerial.print("f,");
-  delay(150);
+void ColorPub(char _switch, int R, int G, int B) {
+  BTSerial.print(String("<") + _switch + "," + String(R) + "," + String(G) + "," + String(B)  + String(">"));
 }
 
 void LedState(int mode) {
@@ -67,7 +54,6 @@ void WindDetect () {
 void SerialPrint() {
   Serial.print(countR, DEC); Serial.print(", ");
   Serial.print(countG, DEC); Serial.print(", ");
-  Serial.print(countB, DEC); Serial.print(", ");
-  Serial.println(lamp_action);
+  Serial.println(countB, DEC);
 }
 
