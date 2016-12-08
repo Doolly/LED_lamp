@@ -5,15 +5,19 @@ void InitMoter(void) {
 
 void MoterCtrl() {
   int pot_val = analogRead(POT);
-  int SPEED = map(pot_val, 0, 1023, 16, 255 );
+  int SPEED = map(pot_val, 0, 1023, 60, 255 );
+  BTSerial.print(lamp_action);
+  BTSerial.print("f,");
   int delay_time = 280000 / SPEED;
   if (delay_time > 20000) {
     delay_time = 20000;
   }
-  Serial.print("pot_val = " + String(pot_val) + "\n");
-  Serial.print("speed = " + String(SPEED) + "\n");
+//  Serial.print("pot_val = " + String(pot_val) + "\n");
+//  Serial.print("speed = " + String(SPEED) + "\n");
   analogWrite(MOTER_F, SPEED);
   analogWrite(MOTER_B, 0);
+  BTSerial.print(lamp_action);
+  BTSerial.print("f,");
   delay(delay_time * 6);
   analogWrite(MOTER_F, 0);
   analogWrite(MOTER_B, 0);

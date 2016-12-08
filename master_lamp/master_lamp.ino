@@ -55,29 +55,27 @@ void setup() {
   InitMoter();
 }
 
-//타이머들 우선순위랑 pwm 겹치는거 고려해야함 delay,millis -> timer0
-
 void loop() {
   LedState(1);
   InitMoter();
-  
-  lamp_action = 0;
-  BTSerial.print(lamp_action);
-  BTSerial.print("f,");
 
   Serial.print("waiting for color     ");
   SerialPrint();
-  
-  if (countR + countG + countB > 120) { //종이가 올라왔다는 조건
+  lamp_action = 0;
+//  BTSerial.print(lamp_action);
+//  BTSerial.print("f,");
+
+  if (countR + countG + countB > 130) { //종이가 올라왔다는 조건
     LedState(4);
     Serial.println("color detected ");
-    
+
     current_time = millis();
     previous_time = current_time;
     while (current_time - previous_time < detecting_time) {
       current_time = millis();
     }
     lamp_action = 1;
+    ColorPub(countR, countG, countB, lamp_action);
     ColorPub(countR, countG, countB, lamp_action);
     Serial.println("color publish through BT  ");
     Serial.println("  ");

@@ -1,14 +1,15 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED 6
+#define LED 4
 #define BT_RX 2
 #define BT_TX 3
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(59, LED, NEO_GRB + NEO_KHZ800); //(led개수,제어핀번호,타입flag)
 SoftwareSerial BTSerial(BT_RX, BT_TX);
 
-void colorWipe(uint32_t c, uint8_t wait);
+void GetBluetooth(void);
+void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait);
 
 int bt_baud = 9600;
 int red;
@@ -40,7 +41,9 @@ void loop() {
   Serial.println(lamp_action);
 
   while (lamp_action == 1) {
-    rgbFadeInAndOut(red, green, blue, 10);
+    rgbFadeInAndOut(red, green, blue, 15);
+    Serial.print("lamp_action =  ");
+    Serial.println(lamp_action);
   }
 }
 
