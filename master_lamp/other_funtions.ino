@@ -5,7 +5,7 @@ void InitMoter(void) {
 
 void MoterCtrl() {
   int pot_val = analogRead(POT);
-  int SPEED = map(pot_val, 0, 1023, 16, 255 );
+  int SPEED = map(pot_val, 0, 1023, 60, 255 );
   int delay_time = 280000 / SPEED;
   if (delay_time > 20000) {
     delay_time = 20000;
@@ -14,14 +14,14 @@ void MoterCtrl() {
   Serial.print("speed = " + String(SPEED) + "\n");
   analogWrite(MOTER_F, SPEED);
   analogWrite(MOTER_B, 0);
-  delay(delay_time * 6);
-  analogWrite(MOTER_F, 0);
+  delay(delay_time * 7);
+  analogWrite(MOTER_F, 80);
   analogWrite(MOTER_B, 0);
   delay(19500);
   ColorPub('x', 0, 0, 0);
   delay(500);
   analogWrite(MOTER_F, 0);
-  analogWrite(MOTER_B, SPEED);
+  analogWrite(MOTER_B, SPEED-80);
   delay(delay_time * 5.2);
   delay(150);
 }

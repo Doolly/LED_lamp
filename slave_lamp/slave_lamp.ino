@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED 6
+#define LED 4
 #define BT_RX 2
 #define BT_TX 3
 
@@ -23,19 +23,22 @@ void setup() {
   BTSerial.setTimeout(200);
   pinMode(LED, OUTPUT);
   strip.begin(); //모든 LED off
-  strip.show();
+  strip.show(); 
 }
 
 void loop() {
   if (lamp_switch) {
+    Serial.print("LED on");
     rgbFadeInAndOut(red, green, blue, 10);
+   
   }
   else {
+    Serial.print("OFF");
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, 0, 0, 0);
     }
-  }
-  strip.show();
+ }
+ // strip.show();
   GetBluetooth();
   Serial.print(red); Serial.print(", ");
   Serial.print(green); Serial.print(", ");
@@ -43,25 +46,25 @@ void loop() {
 
 }
 
-void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
+void rgbFadeInAndOut(uint8_t _red, uint8_t _green, uint8_t _blue, uint8_t wait) {
   for (uint8_t b = 40; b < 255; b++) {
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, red * b / 255, green * b / 255, blue * b / 255);
+      strip.setPixelColor(i, _red * b / 255, _green * b / 255, _blue * b / 255);
     }
     strip.show();
     delay(wait);
-    GetBluetooth();
-    if(lamp_switch == LOW)
+    //GetBluetooth();
+    if (lamp_switch == LOW)
       break;
   }
   for (uint8_t b = 255; b > 40; b--) {
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, red * b / 255, green * b / 255, blue * b / 255);
+      strip.setPixelColor(i, _red * b / 255, _green * b / 255, _blue * b / 255);
     }
     strip.show();
     delay(wait);
     GetBluetooth();
-    if(lamp_switch == LOW)
+    if (lamp_switch == LOW)
       break;
   }
 }
@@ -69,6 +72,7 @@ void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
 void GetBluetooth() {
   if (BTSerial.available()) {
     str = BTSerial.readString();
+    //Serial.print(str);
     if (str.charAt(0) == '<' and str.charAt(str.length() - 1) == '>') {     //delimited ',' string parse
       int first = str.indexOf(",");
       int second = str.indexOf(",", first + 1);

@@ -82,7 +82,7 @@ void loop() {
     while (wind == 0) { //바람을 감지
       Serial.println("~~~~~~~~~wind detected~~~~~~~~~");
       delay(500);
-      LedState(0);
+      LedState(OFF);
       MoterCtrl();
       wind = 1;
     }
