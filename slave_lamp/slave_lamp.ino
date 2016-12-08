@@ -23,22 +23,21 @@ void setup() {
   BTSerial.setTimeout(200);
   pinMode(LED, OUTPUT);
   strip.begin(); //모든 LED off
-  strip.show(); 
+  strip.show();
 }
 
 void loop() {
   if (lamp_switch) {
-    Serial.print("LED on");
     rgbFadeInAndOut(red, green, blue, 10);
-   
+    Serial.print("LED on       ");
   }
   else {
-    Serial.print("OFF");
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, 0, 0, 0);
     }
- }
- // strip.show();
+    rgbFadeInAndOut(red, green, blue, 10);
+    Serial.print("OFF   ");
+  }
   GetBluetooth();
   Serial.print(red); Serial.print(", ");
   Serial.print(green); Serial.print(", ");
@@ -53,7 +52,7 @@ void rgbFadeInAndOut(uint8_t _red, uint8_t _green, uint8_t _blue, uint8_t wait) 
     }
     strip.show();
     delay(wait);
-    //GetBluetooth();
+    GetBluetooth();
     if (lamp_switch == LOW)
       break;
   }
@@ -89,9 +88,19 @@ void GetBluetooth() {
       else
         lamp_switch = LOW;
 
+      Serial.print(str1);
       red = str2.toInt();
       green = str3.toInt();
       blue = str4.toInt();
+
+      if (blue - green > 0 && blue - red > 0) {
+        red = 0;
+        green = 0;
+      }
+      Serial.print("    got BTserial     ");
+      Serial.print(red); Serial.print(", ");
+      Serial.print(green); Serial.print(", ");
+      Serial.println(blue);
     }
   }
 }

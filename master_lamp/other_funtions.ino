@@ -18,15 +18,33 @@ void MoterCtrl() {
   analogWrite(MOTER_F, 80);
   analogWrite(MOTER_B, 0);
   delay(19500);
-  ColorPub('x', 0, 0, 0);
+  for (int a = 0; a < 20; a++) {
+    delay(1);
+    ColorPub('x', 0, 0, 0);
+  }
   delay(500);
   analogWrite(MOTER_F, 0);
-  analogWrite(MOTER_B, SPEED-80);
-  delay(delay_time * 5.2);
+  analogWrite(MOTER_B, SPEED - 80);
+  delay(delay_time * 7);
+  analogWrite(MOTER_F, 80);
+  analogWrite(MOTER_B, 0);
   delay(150);
 }
 
 void ColorPub(char _switch, int R, int G, int B) {
+  if (R < 100)
+    R = 0;
+  if (R > 255)
+    R = 255;
+  if (G < 90)
+    G = 0;
+  if (G > 255)
+    G = 255;
+  if (B < 100)
+    B = 0;
+  if (B > 255)
+    B = 255;
+
   BTSerial.print(String("<") + _switch + "," + String(R) + "," + String(G) + "," + String(B)  + String(">"));
 }
 

@@ -27,34 +27,16 @@ ISR(TIMER2_OVF_vect) { //the timer 2, 10ms interrupt overflow again. Internal ov
   flag++;
   if (flag == 1) {
     countR = counter;
-    if (countR < 90) {
-      countR = 0;
-    }
-    if (countR > 255) {
-      countR = 255;
-    }
     digitalWrite(s2, HIGH);
     digitalWrite(s3, HIGH);
   }
   else if (flag == 2) {
-    countG = (counter / 2) * 3;
-    if (countG < 90) {
-      countG = 0;
-    }
-    if (countG > 255) {
-      countG = 255;
-    }
+    countG = (counter/2) * 3;
     digitalWrite(s2, LOW);
     digitalWrite(s3, HIGH);
   }
   else if (flag == 3) {
     countB = counter;
-    if (countB < 100) {
-      countB = 0;
-    }
-    if (countB > 255) {
-      countB = 255;
-    }
     digitalWrite(s2, LOW);
     digitalWrite(s3, LOW);
   }

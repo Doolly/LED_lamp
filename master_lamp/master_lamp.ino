@@ -28,13 +28,13 @@ int lamp_action;
 volatile int wind = 1;
 unsigned long current_time;
 unsigned long previous_time;
-const long detecting_time = 3000;
+const long detecting_time = 1500;
 
 void TCS();
 void WindDetect();
 void InitMoter(void);
 void LedState(int mode);
-void ColorPub(char _switch ,int R, int G, int B);
+void ColorPub(char _switch , int R, int G, int B);
 void MoterCtrl();
 void SerialPrint();
 
@@ -57,15 +57,12 @@ void setup() {
   InitMoter();
 }
 
-//타이머들 우선순위랑 pwm 겹치는거 고려해야함 delay,millis -> timer0
-
 void loop() {
   LedState(SHORT);
-
   Serial.print("waiting for color     ");
   SerialPrint();
 
-  if (countR + countG + countB > 120) { //종이가 올라왔다는 조건
+  if (countR + countG + countB > 250) { //종이가 올라왔다는 조건
     LedState(ON);
     Serial.println("color detected ");
 
@@ -77,7 +74,6 @@ void loop() {
     ColorPub('o', countR, countG, countB);
     Serial.println("color publish through BT  ");
     Serial.println("  ");
-    SerialPrint();
 
     while (wind == 0) { //바람을 감지
       Serial.println("~~~~~~~~~wind detected~~~~~~~~~");
