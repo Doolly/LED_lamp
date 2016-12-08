@@ -34,9 +34,11 @@ void TCS();
 void WindDetect();
 void InitMoter(void);
 void LedState(int mode);
-void ColorPub(int R, int G, int B, int action);
+void ColorPub(char _switch ,int R, int G, int B);
 void MoterCtrl();
 void SerialPrint();
+
+enum LED {OFF, SHORT, MEDIUM, LONG, ON};
 
 void setup() {
   Serial.begin(9600);
@@ -55,18 +57,16 @@ void setup() {
   InitMoter();
 }
 
+//타이머들 우선순위랑 pwm 겹치는거 고려해야함 delay,millis -> timer0
+
 void loop() {
-  LedState(1);
-  InitMoter();
+  LedState(SHORT);
 
   Serial.print("waiting for color     ");
   SerialPrint();
-  lamp_action = 0;
-//  BTSerial.print(lamp_action);
-//  BTSerial.print("f,");
 
-  if (countR + countG + countB > 130) { //종이가 올라왔다는 조건
-    LedState(4);
+  if (countR + countG + countB > 120) { //종이가 올라왔다는 조건
+    LedState(ON);
     Serial.println("color detected ");
 
     current_time = millis();
@@ -74,9 +74,7 @@ void loop() {
     while (current_time - previous_time < detecting_time) {
       current_time = millis();
     }
-    lamp_action = 1;
-    ColorPub(countR, countG, countB, lamp_action);
-    ColorPub(countR, countG, countB, lamp_action);
+    ColorPub('o', countR, countG, countB);
     Serial.println("color publish through BT  ");
     Serial.println("  ");
     SerialPrint();
@@ -89,5 +87,4 @@ void loop() {
       wind = 1;
     }
   }
-
 }

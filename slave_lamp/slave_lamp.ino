@@ -1,50 +1,46 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED 4
+#define LED 6
 #define BT_RX 2
 #define BT_TX 3
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(59, LED, NEO_GRB + NEO_KHZ800); //(led개수,제어핀번호,타입flag)
 SoftwareSerial BTSerial(BT_RX, BT_TX);
 
-void GetBluetooth(void);
-void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait);
+void colorWipe(uint32_t c, uint8_t wait);
 
 int bt_baud = 9600;
 int red;
 int green;
 int blue;
-int lamp_action;
-int start_flag;
-String readString;
+bool lamp_switch;
+String str = "";
 
 void setup() {
   Serial.begin(9600);
   BTSerial.begin(bt_baud);
+  BTSerial.setTimeout(200);
   pinMode(LED, OUTPUT);
   strip.begin(); //모든 LED off
   strip.show();
 }
 
 void loop() {
-  lamp_action = 0;
-  for (uint8_t i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, 0, 0, 0);
+  if (lamp_switch) {
+    rgbFadeInAndOut(red, green, blue, 10);
+  }
+  else {
+    for (uint8_t i = 0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, 0, 0, 0);
+    }
   }
   strip.show();
   GetBluetooth();
-
   Serial.print(red); Serial.print(", ");
   Serial.print(green); Serial.print(", ");
-  Serial.print(blue); Serial.print(", ");
-  Serial.println(lamp_action);
+  Serial.println(blue);
 
-  while (lamp_action == 1) {
-    rgbFadeInAndOut(red, green, blue, 15);
-    Serial.print("lamp_action =  ");
-    Serial.println(lamp_action);
-  }
 }
 
 void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
@@ -55,6 +51,8 @@ void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
     strip.show();
     delay(wait);
     GetBluetooth();
+    if(lamp_switch == LOW)
+      break;
   }
   for (uint8_t b = 255; b > 40; b--) {
     for (uint8_t i = 0; i < strip.numPixels(); i++) {
@@ -63,34 +61,33 @@ void rgbFadeInAndOut(uint8_t red, uint8_t green, uint8_t blue, uint8_t wait) {
     strip.show();
     delay(wait);
     GetBluetooth();
+    if(lamp_switch == LOW)
+      break;
   }
 }
 
 void GetBluetooth() {
   if (BTSerial.available()) {
-    char c = BTSerial.read();
+    str = BTSerial.readString();
+    if (str.charAt(0) == '<' and str.charAt(str.length() - 1) == '>') {     //delimited ',' string parse
+      int first = str.indexOf(",");
+      int second = str.indexOf(",", first + 1);
+      int third = str.indexOf(",", second + 1);
+      int fourth = str.indexOf(">", third);
 
-    if (c == ',') {       //delimited ',' string parse
-      if (readString.length() > 1) { //reads characters into a string
-        int n = readString.toInt();  //convert readString into a number
+      String str1 = str.substring(1, first);
+      String str2 = str.substring(first + 1, second);
+      String str3 = str.substring(second + 1, third);
+      String str4 = str.substring(third + 1, fourth);
 
-        if (readString.indexOf('r') > 0) {
-          red = n;
-        }
-        else if (readString.indexOf('g') > 0) {
-          green = n;
-        }
-        else if (readString.indexOf('b') > 0) {
-          blue = n;
-        }
-        if (readString.indexOf('f') > 0) {
-          lamp_action = n;
-        }
-        readString = ""; //clears variable for new input
-      }
-    }
-    else {
-      readString += c; //makes the string readString
+      if (str1 == "o")
+        lamp_switch = HIGH;
+      else
+        lamp_switch = LOW;
+
+      red = str2.toInt();
+      green = str3.toInt();
+      blue = str4.toInt();
     }
   }
 }
